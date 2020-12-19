@@ -1,0 +1,10 @@
+{
+  "extends": ["nzap", "nzap/tsx", "nzap/jest"],
+  "env": {
+    "jest": true
+  },
+  "rules": {
+    "react/react-in-jsx-scope": 0,
+    "react/display-name": 0
+  }
+}
