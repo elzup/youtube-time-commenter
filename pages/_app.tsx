@@ -1,4 +1,4 @@
-import { MuiThemeProvider } from '@material-ui/core'
+import { CssBaseline, MuiThemeProvider } from '@material-ui/core'
 import { NextPage } from 'next'
 import { AppProps } from 'next/dist/next-server/lib/router/router'
 import dynamic from 'next/dynamic'
@@ -11,6 +11,7 @@ const App: NextPage<AppProps> = (props) => {
 
   return (
     <MuiThemeProvider theme={theme}>
+      <CssBaseline />
       <Head>
         <title>{'YouTube 拡張コメントツール'}</title>
       </Head>
