@@ -44,6 +44,12 @@ const IndexPage: NextPage = () => {
 
     setComments(res)
   }
+  const deleteComment = (commentId: string) => {
+    const newComments = _.keyBy(comments, 'id')
+
+    delete newComments[commentId]
+    setComments(_.values(newComments))
+  }
 
   return (
     <Layout>
@@ -67,23 +73,29 @@ const IndexPage: NextPage = () => {
           <TextField
             variant="outlined"
             multiline
+            fullWidth
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
-          <Button
-            onClick={() => {
-              addComment(text)
-              setText('')
-            }}
-          >
-            保存
-          </Button>
+          <div style={{ display: 'grid', justifyContent: 'flex-end' }}>
+            <Button
+              onClick={() => {
+                addComment(text)
+                setText('')
+              }}
+            >
+              保存
+            </Button>
+          </div>
           {Object.entries(comments).map(([id, comment]) => (
             <CommentBox
               key={id}
               comment={comment}
               updateComment={(comment) => {
                 updateComment(comment)
+              }}
+              deleteComment={() => {
+                deleteComment(comment.id)
               }}
             />
           ))}

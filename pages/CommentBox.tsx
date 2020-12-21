@@ -7,6 +7,7 @@ import { timeNum, timeStr } from '../utils'
 type Props = {
   comment: Comment
   updateComment: (comment: Comment) => void
+  deleteComment: () => void
 }
 const Box = styled(Card)`
   margin-top: 8px;
@@ -14,7 +15,7 @@ const Box = styled(Card)`
   /* border: padding: 8px; */
 `
 
-const CommentBox = ({ comment, updateComment }: Props) => {
+const CommentBox = ({ comment, updateComment, deleteComment }: Props) => {
   const [text, setText] = useState<string>('')
   const [time, setTime] = useState<string>('')
 
@@ -39,13 +40,16 @@ const CommentBox = ({ comment, updateComment }: Props) => {
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
-      <Button
-        onClick={() => {
-          updateComment({ ...comment, text, time: timeNum(time) })
-        }}
-      >
-        更新
-      </Button>
+      <div style={{ display: 'grid', justifyContent: 'flex-end' }}>
+        <Button onClick={deleteComment}>削除</Button>
+        <Button
+          onClick={() => {
+            updateComment({ ...comment, text, time: timeNum(time) })
+          }}
+        >
+          更新
+        </Button>
+      </div>
     </Box>
   )
 }
