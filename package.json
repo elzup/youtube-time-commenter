@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "next",
-    "build": "next build",
+    "build": "env NODE_ENV='production' next build",
     "test": "jest",
     "test:e2e": "qawolf test",
     "export": "yarn build && next export",
