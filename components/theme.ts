@@ -13,29 +13,21 @@ export const layout = {
 export const theme = createMuiTheme({
   props: {
     MuiButton: {
+      variant: 'contained',
+    },
+    MuiTextField: {
       variant: 'outlined',
     },
   },
   overrides: {
-    MuiCardHeader: {
-      title: {
-        fontSize: '16px',
+    MuiTextField: {
+      root: {
+        margin: '4px',
       },
     },
     MuiButton: {
       root: {
-        textTransform: 'none',
-      },
-    },
-    MuiRadio: {
-      root: {
-        margin: 0,
-        padding: 0,
-      },
-    },
-    MuiFormLabel: {
-      filled: {
-        transform: 'translate(0, 1.5px) scale(1) !important',
+        margin: '4px',
       },
     },
   },

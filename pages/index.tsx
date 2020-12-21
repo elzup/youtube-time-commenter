@@ -54,7 +54,6 @@ const IndexPage: NextPage = () => {
   return (
     <Layout>
       <TextField
-        variant="outlined"
         label="URL"
         value={url}
         onChange={(e) => setUrl(e.target.value)}
@@ -71,7 +70,6 @@ const IndexPage: NextPage = () => {
       <Grid container spacing={1}>
         <Grid item xs={6}>
           <TextField
-            variant="outlined"
             multiline
             fullWidth
             value={text}

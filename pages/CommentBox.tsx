@@ -1,4 +1,4 @@
-import { Button, Card, TextField, Typography } from '@material-ui/core'
+import { Button, Card, TextField } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Comment } from '../types'
@@ -30,7 +30,6 @@ const CommentBox = ({ comment, updateComment, deleteComment }: Props) => {
   return (
     <Box>
       <TextField
-        variant="outlined"
         size="small"
         value={timeLabel}
         error={isNaN(time)}
@@ -40,7 +39,6 @@ const CommentBox = ({ comment, updateComment, deleteComment }: Props) => {
         }}
       />
       <TextField
-        variant="outlined"
         fullWidth
         multiline
         value={text}
