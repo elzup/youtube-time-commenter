@@ -1,35 +1,28 @@
 import React, { useState } from 'react'
 import { NextPage } from 'next'
-import { Button, TextField, Typography } from '@material-ui/core'
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  TextField,
+  Typography,
+} from '@material-ui/core'
 import ReactPlayer from 'react-player'
+import _ from 'lodash'
 import Layout from '../components/Layout'
 import { useLocalStorage } from '../utils/useLocalStorage'
 import { Comment } from '../types'
+import { commentsToText, timeStr } from '../utils'
 import CommentBox from './CommentBox'
-
-const timeStr = (time: number) => {
-  const times: string[] = []
-  const h = Math.floor(time / 3600)
-  const m = Math.floor((time % 3600) / 60)
-  const s = Math.floor(time % 60)
-
-  if (h > 0) {
-    times.push(`${h}`)
-  }
-  times.push(`${m}`.padStart(times.length > 0 ? 2 : 1, '0'))
-  times.push(`${s}`.padStart(times.length > 0 ? 2 : 1, '0'))
-
-  return times.join(':')
-}
-
-const commentsToText = (comments: Comment[]) =>
-  comments
-    .map((comment) => `${timeStr(comment.time)} ${comment.text}`)
-    .join('\n\n')
 
 const IndexPage: NextPage = () => {
   const [url, setUrl] = useLocalStorage<string>('url', '')
   const [time, setTime] = useState<number>(0)
+  const [timeNewLine, setTimeNewLine] = useLocalStorage<boolean>(
+    'timeNewLine',
+    true
+  )
   const [comments, setComments] = useLocalStorage<Record<string, Comment>>(
     'comments',
     {}
@@ -41,19 +34,18 @@ const IndexPage: NextPage = () => {
       .map(Number)
       .sort((a, b) => a - b)
 
-    console.log(ids)
     const id = String((ids.pop() || 0) + 1)
-
     const newComment: Comment = { id, text, time }
 
-    updateComment(id, newComment)
+    updateComment(newComment)
   }
 
-  const updateComment = (id: string, comment: Comment) => {
-    const newComments = { ...comments }
+  const updateComment = (comment: Comment) => {
+    const newComments = [...Object.values(comments), comment]
 
-    newComments[id] = comment
-    setComments(newComments)
+    _.sortBy(newComments, ['time', 'id'])
+
+    setComments(_.keyBy(newComments, 'id'))
   }
 
   return (
@@ -69,35 +61,52 @@ const IndexPage: NextPage = () => {
         url={url}
         onProgress={({ playedSeconds }) => setTime(playedSeconds)}
       />
-      <Typography>Time: {time}</Typography>
-      <TextField
-        variant="outlined"
-        multiline
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
-      <Button
-        onClick={() => {
-          addComment(text)
-          setText('')
-        }}
-      >
-        保存
-      </Button>
-      {Object.entries(comments).map(([id, comment]) => (
-        <CommentBox
-          key={id}
-          comment={comment}
-          updateComment={(comment) => {
-            updateComment(id, comment)
-          }}
-        />
-      ))}
-      <TextField
-        aria-readonly
-        multiline
-        value={commentsToText(Object.values(comments))}
-      />
+      <div>
+        <Typography variant="h5">コメントフォーム</Typography>
+        <Typography>Time: {timeStr(time)}</Typography>
+      </div>
+      <Grid container spacing={1}>
+        <Grid item xs={6}>
+          <TextField
+            variant="outlined"
+            multiline
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
+          <Button
+            onClick={() => {
+              addComment(text)
+              setText('')
+            }}
+          >
+            保存
+          </Button>
+          {Object.entries(comments).map(([id, comment]) => (
+            <CommentBox
+              key={id}
+              comment={comment}
+              updateComment={(comment) => {
+                updateComment(comment)
+              }}
+            />
+          ))}
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="h5">生成テキスト</Typography>
+          <FormControlLabel
+            style={{ display: 'block' }}
+            control={
+              <Checkbox onChange={(v, checked) => setTimeNewLine(checked)} />
+            }
+            label="改行する"
+          />
+          <TextField
+            aria-readonly
+            multiline
+            value={commentsToText(Object.values(comments), timeNewLine)}
+          />
+        </Grid>
+      </Grid>
     </Layout>
   )
 }

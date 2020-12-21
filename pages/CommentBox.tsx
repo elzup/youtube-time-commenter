@@ -1,7 +1,8 @@
-import { Button, Card, TextField } from '@material-ui/core'
+import { Button, Card, TextField, Typography } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Comment } from '../types'
+import { timeStr } from '../utils'
 
 type Props = {
   comment: Comment
@@ -22,8 +23,10 @@ const CommentBox = ({ comment, updateComment }: Props) => {
 
   return (
     <Box>
+      <Typography variant="caption">{timeStr(comment.time)}</Typography>
       <TextField
         variant="outlined"
+        fullWidth
         multiline
         value={text}
         onChange={(e) => setText(e.target.value)}
