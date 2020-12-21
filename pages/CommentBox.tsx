@@ -2,7 +2,7 @@ import { Button, Card, TextField, Typography } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Comment } from '../types'
-import { timeStr } from '../utils'
+import { timeNum, timeStr } from '../utils'
 
 type Props = {
   comment: Comment
@@ -16,14 +16,22 @@ const Box = styled(Card)`
 
 const CommentBox = ({ comment, updateComment }: Props) => {
   const [text, setText] = useState<string>('')
+  const [time, setTime] = useState<string>('')
 
   useEffect(() => {
     setText(comment.text)
-  }, [comment.text])
+    setTime(timeStr(comment.time))
+  }, [comment.text, comment.time])
 
   return (
     <Box>
       <Typography variant="caption">{timeStr(comment.time)}</Typography>
+      <TextField
+        variant="outlined"
+        size="small"
+        value={time}
+        onChange={(e) => setTime(e.target.value)}
+      />
       <TextField
         variant="outlined"
         fullWidth
@@ -33,7 +41,7 @@ const CommentBox = ({ comment, updateComment }: Props) => {
       />
       <Button
         onClick={() => {
-          updateComment({ ...comment, text })
+          updateComment({ ...comment, text, time: timeNum(time) })
         }}
       >
         更新

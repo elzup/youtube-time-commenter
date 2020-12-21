@@ -23,29 +23,26 @@ const IndexPage: NextPage = () => {
     'timeNewLine',
     true
   )
-  const [comments, setComments] = useLocalStorage<Record<string, Comment>>(
-    'comments',
-    {}
-  )
+  const [comments, setComments] = useLocalStorage<Comment[]>('comments', [])
   const [text, setText] = useState<string>('')
 
   const addComment = (text: string) => {
-    const ids = Object.keys(comments)
-      .map(Number)
-      .sort((a, b) => a - b)
-
-    const id = String((ids.pop() || 0) + 1)
+    const ids = comments.map((c) => Number(c.id))
+    const maxId = _.max(ids) || 0
+    const id = String(maxId + 1)
     const newComment: Comment = { id, text, time }
 
     updateComment(newComment)
   }
 
   const updateComment = (comment: Comment) => {
-    const newComments = [...Object.values(comments), comment]
+    const newComments = _.keyBy(comments, 'id')
 
-    _.sortBy(newComments, ['time', 'id'])
+    newComments[comment.id] = comment
 
-    setComments(_.keyBy(newComments, 'id'))
+    const res = _.sortBy(_.values(newComments), ['time', 'id'])
+
+    setComments(res)
   }
 
   return (

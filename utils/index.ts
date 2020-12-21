@@ -15,6 +15,24 @@ export const timeStr = (time: number) => {
   return times.join(':')
 }
 
+export const timeNum = (timeStr: string) => {
+  const times = timeStr.split(':')
+  const ss = times.pop()
+  const mm = times.pop()
+  const hh = times.pop()
+  let time = 0
+
+  time += Number(ss)
+  if (mm) {
+    time += Number(mm) * 60
+  }
+  if (hh) {
+    time += Number(hh) * 3600
+  }
+
+  return time
+}
+
 export const commentsToText = (comments: Comment[], timeNewLine = false) =>
   comments
     .map(
