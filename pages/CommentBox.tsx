@@ -17,21 +17,27 @@ const Box = styled(Card)`
 
 const CommentBox = ({ comment, updateComment, deleteComment }: Props) => {
   const [text, setText] = useState<string>('')
-  const [time, setTime] = useState<string>('')
+  const [time, setTime] = useState<number>(0)
+  const [timeLabel, setTimeLabel] = useState<string>('')
 
   useEffect(() => {
     setText(comment.text)
-    setTime(timeStr(comment.time))
+    setTime(comment.time)
+    setTimeLabel(timeStr(comment.time))
   }, [comment.text, comment.time])
+  const changed = comment.text !== text || timeStr(comment.time) !== timeLabel
 
   return (
     <Box>
-      <Typography variant="caption">{timeStr(comment.time)}</Typography>
       <TextField
         variant="outlined"
         size="small"
-        value={time}
-        onChange={(e) => setTime(e.target.value)}
+        value={timeLabel}
+        error={isNaN(time)}
+        onChange={(e) => {
+          setTimeLabel(e.target.value)
+          setTime(timeNum(e.target.value))
+        }}
       />
       <TextField
         variant="outlined"
@@ -40,11 +46,15 @@ const CommentBox = ({ comment, updateComment, deleteComment }: Props) => {
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
-      <div style={{ display: 'grid', justifyContent: 'flex-end' }}>
-        <Button onClick={deleteComment}>削除</Button>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Button color="secondary" onClick={deleteComment}>
+          削除
+        </Button>
         <Button
+          color={changed ? 'primary' : 'default'}
+          disabled={!changed || isNaN(time)}
           onClick={() => {
-            updateComment({ ...comment, text, time: timeNum(time) })
+            updateComment({ ...comment, text, time })
           }}
         >
           更新

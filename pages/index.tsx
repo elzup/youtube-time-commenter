@@ -79,6 +79,7 @@ const IndexPage: NextPage = () => {
           />
           <div style={{ display: 'grid', justifyContent: 'flex-end' }}>
             <Button
+              disabled={text === ''}
               onClick={() => {
                 addComment(text)
                 setText('')
